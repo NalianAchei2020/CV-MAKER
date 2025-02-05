@@ -1,45 +1,46 @@
-import express from express;
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
+import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import config from "./config";
+import config from './config.js';
 
 const app = express();
 // body parser middleware
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // cookies middleware
-app.use(cookieParser(config.JWT_SECRET))
+app.use(cookieParser(config.JWT_SECRET));
 
 //cors
-app.use(cors({
+app.use(
+  cors({
     origin: '',
     methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-}))
+  })
+);
 
 // Preflight requests
 app.options('*', (req, res) => {
-    res.header(
-      'Access-Control-Allow-Origin',
-      'https://codegisoft-acadamy.onrender.com'
-    );
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET, POST, PUT, DELETE, PATCH, OPTIONS'
-    );
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.status(204).send();
-  });
+  res.header(
+    'Access-Control-Allow-Origin',
+    'https://codegisoft-acadamy.onrender.com'
+  );
+  res.header(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+  );
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.status(204).send();
+});
 
+app.get('/', (req, res) => {
+  res.send('Welcome to CV maker');
+});
 
-app.get('/', (res, req) => {
-   res.send('Welcome to CV maker') 
-})
-
-
-
-app.listen()
+app.listen(config.PORT, () => {
+  console.log('Application is running on http://localhost:20015');
+});
