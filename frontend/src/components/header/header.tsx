@@ -18,8 +18,8 @@ const Header = () => {
 
   return (
     <header className="relative">
-      <div className="flex flex-row justify-between p-10 bg-[#beedf2]">
-        <div className="logo space-x-2 mt-[-3em]">
+      <div className="flex flex-row justify-between pt-5 px-10 bg-[#beedf2]">
+        <div className="logo space-x-2 mt-[-4em]">
           <Image
             src="/Images/logo.png"
             alt="logo"
