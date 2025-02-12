@@ -9,6 +9,9 @@ const cvSchema = new Schema({
     address: { type: String },
     profilePicture: { type: String },
   },
+  job_title: { type: String, required: true },
+  summary: { type: String, required: true },
+
   workExperience: [
     {
       jobTitle: { type: String, required: true },
