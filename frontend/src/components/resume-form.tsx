@@ -23,6 +23,73 @@ import { LanguagesStep } from '@/components/form-steps/languages';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import SaveIcon from '@mui/icons-material/Save';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+
+export interface ResumeFormValues {
+  personalInfo: {
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+    profilePicture: string;
+  };
+  job_title: string;
+  summary: string;
+  workExperience: Array<{
+    id: string;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string;
+    description: string;
+  }>;
+  education: Array<{
+    id: string;
+    institution: string;
+    degree: string;
+    field: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  skills: Array<{
+    id: string;
+    name: string;
+  }>;
+  projects: Array<{
+    id: string;
+    name: string;
+    description: string;
+    technologies: string[];
+    link?: string;
+  }>;
+  languages: Array<{
+    id: string;
+    name: string;
+    proficiency: string;
+  }>;
+}
+
+const STORAGE_KEYS = {
+  FORM_DATA: 'resumeFormData',
+  ACTIVE_STEP: 'resumeActiveStep',
+} as const;
+
+const defaultValues: ResumeFormValues = {
+  personalInfo: {
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    profilePicture: '',
+  },
+  job_title: '',
+  summary: '',
+  workExperience: [],
+  education: [],
+  skills: [],
+  projects: [],
+  languages: [],
+};
 
 const steps = [
   { label: 'Personal Info', component: PersonalInfoStep },
@@ -34,42 +101,44 @@ const steps = [
 ];
 
 export function ResumeForm() {
-  const [activeStep, setActiveStep] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const form = useForm({
-    defaultValues: {
-      personalInfo: {
-        fullName: '',
-        email: '',
-        phone: '',
-        address: '',
-        profilePicture: '',
-      },
-      job_title: '',
-      summary: '',
-      workExperience: [],
-      education: [],
-      skills: [],
-      projects: [],
-      languages: [],
-    },
+  const [savedFormData, setSavedFormData] = useLocalStorage<ResumeFormValues>(
+    STORAGE_KEYS.FORM_DATA,
+    defaultValues
+  );
+
+  const [activeStep, setActiveStep] = useLocalStorage(
+    STORAGE_KEYS.ACTIVE_STEP,
+    0
+  );
+
+  const form = useForm<ResumeFormValues>({
+    defaultValues: savedFormData,
   });
+
+  // Update localStorage when form changes
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      setSavedFormData(value as ResumeFormValues);
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch, setSavedFormData]);
 
   const CurrentStepComponent = steps[activeStep].component;
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep(Math.min(steps.length - 1, activeStep + 1));
   };
 
   const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
+    setActiveStep(Math.max(0, activeStep - 1));
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: ResumeFormValues) => {
     console.log(data);
-    // Handle form submission
+    setSavedFormData(data);
   };
 
   return (
@@ -147,7 +216,6 @@ export function ResumeForm() {
           }}
         >
           <Button
-            // fullWidth={isMobile}
             variant="outlined"
             onClick={handleBack}
             disabled={activeStep === 0}
@@ -167,7 +235,6 @@ export function ResumeForm() {
             </Button>
           ) : (
             <Button
-              // fullWidth={isMobile}
               variant="contained"
               onClick={handleNext}
               endIcon={<NavigateNextIcon />}
