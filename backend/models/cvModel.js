@@ -45,6 +45,12 @@ const cvSchema = new Schema({
       link: { type: String },
     },
   ],
+  languages: [
+    {
+      language: { type: String },
+      level: { type: String },
+    },
+  ],
   selectedTemplate: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Template',
