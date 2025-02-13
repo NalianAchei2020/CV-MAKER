@@ -74,6 +74,11 @@ export function PersonalInfoStep({ form }: { form: any }) {
       </Grid>
 
       <Grid item xs={12}>
+        <div className="flex flex-">
+          <button className="outline-blue-700 p-2 border-2 border-blue-700 rounded-lg mb-2 text-blue-500">
+            Generate from AI
+          </button>
+        </div>
         <TextField
           fullWidth
           label="Professional Summary"
