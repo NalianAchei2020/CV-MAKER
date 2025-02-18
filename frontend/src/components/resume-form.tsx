@@ -15,6 +15,7 @@ import {
   MobileStepper,
 } from '@mui/material';
 import { PersonalInfoStep } from '@/components/form-steps/personal-info';
+import SummaryStep from './form-steps/Summary';
 import { WorkExperienceStep } from '@/components/form-steps/work-experience';
 import { EducationStep } from '@/components/form-steps/education';
 import { SkillsStep } from '@/components/form-steps/skills';
@@ -93,6 +94,7 @@ const defaultValues: ResumeFormValues = {
 
 const steps = [
   { label: 'Personal Info', component: PersonalInfoStep },
+  { label: 'Summary', component: SummaryStep },
   { label: 'Work Experience', component: WorkExperienceStep },
   { label: 'Education', component: EducationStep },
   { label: 'Skills', component: SkillsStep },
@@ -203,7 +205,7 @@ export function ResumeForm() {
 
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Box sx={{ mt: 4, mb: 4 }}>
-          <CurrentStepComponent form={form} />
+          <CurrentStepComponent form={form} formData={form.getValues()} />
         </Box>
 
         <Box
