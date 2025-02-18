@@ -13,10 +13,9 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import TextEditor from './textEditor';
 
-export function WorkExperienceStep({ form }: { form: any } ) {
+export function WorkExperienceStep({ form }: { form: any }) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'workExperience',
@@ -108,14 +107,21 @@ export function WorkExperienceStep({ form }: { form: any } ) {
                     Generate from AI
                   </button>
                 </div>
-                <ReactQuill
-                  theme="snow"
-                  {...form.register(`workExperience.${index}.description`)}
-                  onChange={(value) =>
-                    form.setValue(`workExperience.${index}.description`, value)
-                  }
-                  placeholder="Description"
-                />
+                <Box
+                  sx={{ border: 1, borderColor: 'grey.300', borderRadius: 1 }}
+                >
+                  <TextEditor
+                    value={form.watch(`workExperience.${index}.description`)}
+                    {...form.register(`workExperience.${index}.description`)}
+                    onChange={(value) =>
+                      form.setValue(
+                        `workExperience.${index}.description`,
+                        value
+                      )
+                    }
+                    placeholder="Description"
+                  />
+                </Box>
               </Grid>
             </Grid>
           </CardContent>
