@@ -1,11 +1,11 @@
 'use client';
-
 import { TextField, Grid } from '@mui/material';
 
 export function PersonalInfoStep({ form }: { form: any }) {
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      {/* First Column */}
+      <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="Full Name"
@@ -16,7 +16,7 @@ export function PersonalInfoStep({ form }: { form: any }) {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="Email"
@@ -28,7 +28,8 @@ export function PersonalInfoStep({ form }: { form: any }) {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      {/* Second Column */}
+      <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="Phone"
@@ -39,7 +40,7 @@ export function PersonalInfoStep({ form }: { form: any }) {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="Address"
@@ -49,7 +50,8 @@ export function PersonalInfoStep({ form }: { form: any }) {
           helperText={form.formState.errors.personalInfo?.address?.message}
         />
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="LinkedIn Profile"
@@ -62,7 +64,7 @@ export function PersonalInfoStep({ form }: { form: any }) {
         />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <TextField
           fullWidth
           label="Job Title"
@@ -70,24 +72,6 @@ export function PersonalInfoStep({ form }: { form: any }) {
           {...form.register('job_title')}
           error={!!form.formState.errors.job_title}
           helperText={form.formState.errors.job_title?.message}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <div className="flex flex-">
-          <button className="outline-blue-700 p-2 border-2 border-blue-700 rounded-lg mb-2 text-blue-500">
-            Generate from AI
-          </button>
-        </div>
-        <TextField
-          fullWidth
-          label="Professional Summary"
-          variant="outlined"
-          multiline
-          rows={4}
-          {...form.register('summary')}
-          error={!!form.formState.errors.summary}
-          helperText={form.formState.errors.summary?.message}
         />
       </Grid>
     </Grid>
