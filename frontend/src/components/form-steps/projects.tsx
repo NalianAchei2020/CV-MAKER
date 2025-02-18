@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray } from 'react-hook-form';
 import {
   TextField,
   Grid,
@@ -10,14 +10,14 @@ import {
   Typography,
   IconButton,
   Box,
-} from "@mui/material";
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export function ProjectsStep({ form }: { form: any }) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "projects",
+    name: 'projects',
   });
 
   return (
@@ -25,7 +25,14 @@ export function ProjectsStep({ form }: { form: any }) {
       {fields.map((field, index) => (
         <Card key={field.id} variant="outlined">
           <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+              }}
+            >
               <Typography variant="h6">Project {index + 1}</Typography>
               <IconButton
                 onClick={() => remove(index)}
@@ -47,6 +54,11 @@ export function ProjectsStep({ form }: { form: any }) {
               </Grid>
 
               <Grid item xs={12}>
+                <div className="flex justify-end items-end">
+                  <button className="outline-blue-700 p-2 border-2 border-blue-700 rounded-lg mb-2 text-blue-500">
+                    Generate from AI
+                  </button>
+                </div>
                 <TextField
                   fullWidth
                   label="Description"
@@ -75,9 +87,9 @@ export function ProjectsStep({ form }: { form: any }) {
         startIcon={<AddIcon />}
         onClick={() =>
           append({
-            title: "",
-            description: "",
-            link: "",
+            title: '',
+            description: '',
+            link: '',
           })
         }
         fullWidth
