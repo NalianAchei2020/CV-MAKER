@@ -26,15 +26,15 @@ const SummaryStep = ({ form, formData }: { form: any; formData: any }) => {
       const result = await AIchatSession.sendMessage(prompt);
       const response = result.response.text();
 
-      // Split the response into separate summaries based on the bullet points
-      const summariesArray = response.split('**').filter((text) => text.trim());
-      console.log(summariesArray);
+      // Parse the response text using a more compatible regex approach
+      const experiencedMatch = response.match(/\*\*Experienced:\*\*([^*]+)/);
+      const midLevelMatch = response.match(/\*\*Mid-Level:\*\*([^*]+)/);
+      const entryLevelMatch = response.match(/\*\*Entry-Level:\*\*([^*]+)/);
 
-      // Create an object with the summaries
       const summaries = {
-        experienced: summariesArray[1].split(':')[1].trim(),
-        midLevel: summariesArray[3].split(':')[1].trim(),
-        entryLevel: summariesArray[5].split(':')[1].trim(),
+        experienced: experiencedMatch?.[1]?.trim() || '',
+        midLevel: midLevelMatch?.[1]?.trim() || '',
+        entryLevel: entryLevelMatch?.[1]?.trim() || '',
       };
 
       setSummaryOptions(summaries);
