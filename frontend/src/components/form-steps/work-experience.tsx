@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray } from 'react-hook-form';
 import {
   TextField,
   Grid,
@@ -10,14 +10,16 @@ import {
   Typography,
   IconButton,
   Box,
-} from "@mui/material";
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-export function WorkExperienceStep({ form }: { form: any }) {
+export function WorkExperienceStep({ form }: { form: any } ) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "workExperience",
+    name: 'workExperience',
   });
 
   return (
@@ -25,7 +27,14 @@ export function WorkExperienceStep({ form }: { form: any }) {
       {fields.map((field, index) => (
         <Card key={field.id} variant="outlined">
           <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+              }}
+            >
               <Typography variant="h6">Experience {index + 1}</Typography>
               <IconButton
                 onClick={() => remove(index)}
@@ -37,7 +46,7 @@ export function WorkExperienceStep({ form }: { form: any }) {
             </Box>
 
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   label="Job Title"
@@ -46,12 +55,28 @@ export function WorkExperienceStep({ form }: { form: any }) {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   label="Company"
                   variant="outlined"
                   {...form.register(`workExperience.${index}.company`)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="City"
+                  variant="outlined"
+                  {...form.register(`workExperience.${index}.city`)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Country"
+                  variant="outlined"
+                  {...form.register(`workExperience.${index}.country`)}
                 />
               </Grid>
 
@@ -78,13 +103,18 @@ export function WorkExperienceStep({ form }: { form: any }) {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  multiline
-                  rows={4}
-                  variant="outlined"
+                <div className="flex justify-end items-end">
+                  <button className="outline-blue-700 p-2 border-2 border-blue-700 rounded-lg mb-2 text-blue-500">
+                    Generate from AI
+                  </button>
+                </div>
+                <ReactQuill
+                  theme="snow"
                   {...form.register(`workExperience.${index}.description`)}
+                  onChange={(value) =>
+                    form.setValue(`workExperience.${index}.description`, value)
+                  }
+                  placeholder="Description"
                 />
               </Grid>
             </Grid>
@@ -97,11 +127,11 @@ export function WorkExperienceStep({ form }: { form: any }) {
         startIcon={<AddIcon />}
         onClick={() =>
           append({
-            jobTitle: "",
-            company: "",
-            startDate: "",
-            endDate: "",
-            description: "",
+            jobTitle: '',
+            company: '',
+            startDate: '',
+            endDate: '',
+            description: '',
           })
         }
         fullWidth
