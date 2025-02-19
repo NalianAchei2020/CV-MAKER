@@ -18,11 +18,11 @@ const SummaryStep = ({ form, formData }: { form: any; formData: any }) => {
   } | null>(null);
 
   const jobTitle = formData?.job_title;
-  const prompt = `Create three concise resume summary options for a job title of "${jobTitle}". Each summary should target one of the following experience levels: experienced (mid-level), mid-level, and entry-level. Please keep the summaries brief and avoid any additional instructions or explanations.`;
+  const prompt = `Create three concise resume summary options for a job title of "${jobTitle}". Each summary should target one of the following experience levels: experienced (mid-level), mid-level, and entry-level.
+   Please keep the summaries brief and avoid any additional instructions or explanations.`;
 
   const generateSummaryFromAI = async () => {
     try {
-      console.log('Prompt:', prompt);
       const result = await AIchatSession.sendMessage(prompt);
       const response = result.response.text();
 
