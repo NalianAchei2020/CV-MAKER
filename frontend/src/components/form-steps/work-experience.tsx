@@ -1,5 +1,4 @@
-'use client';
-
+import React, { useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
 import {
   TextField,
@@ -15,11 +14,53 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextEditor from './textEditor';
 
-export function WorkExperienceStep({ form }: { form: any }) {
+import { Loader2 } from 'lucide-react';
+import { AIchatSession2 } from '@/service/AIexperienceDesAPI';
+
+interface WorkExperienceStepProps {
+  form: any;
+  formData: any;
+}
+
+export function WorkExperienceStep({
+  form,
+  formData,
+}: WorkExperienceStepProps) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'workExperience',
   });
+
+  const [loading2, setLoading2] = useState(false);
+
+  const workExperienceDesFromAI = async (index: number) => {
+    const jobTitle = form.watch(`workExperience.${index}.jobTitle`);
+    const prompt = `Write a concise description within 5 points for this job experience ${
+      jobTitle || 'N/A'
+    }. Please keep the summaries brief and avoid any additional instructions or explanations.`;
+
+    if (!jobTitle) {
+      console.error('Please enter a job title first.');
+      return;
+    }
+
+    try {
+      setLoading2(true);
+      const result = await AIchatSession2.sendMessage(prompt);
+      const response = await result.response.text();
+      const text = response
+        .split('.')
+        .map((sentence) => sentence.trim())
+        .filter((sentence) => sentence)
+        .join('\n');
+
+      form.setValue(`workExperience.${index}.description`, text);
+    } catch (error) {
+      console.error('Error generating description:', error);
+    } finally {
+      setLoading2(false);
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -103,16 +144,26 @@ export function WorkExperienceStep({ form }: { form: any }) {
 
               <Grid item xs={12}>
                 <div className="flex justify-end items-end">
-                  <button className="outline-blue-700 p-2 border-2 border-blue-700 rounded-lg mb-2 text-blue-500">
-                    Generate from AI
+                  <button
+                    type="button"
+                    className="outline-blue-700 p-2 border-2 border-blue-700 rounded-lg mb-2 text-blue-500 flex gap-4"
+                    onClick={() => workExperienceDesFromAI(index)}
+                  >
+                    {loading2 ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      ''
+                    )}
+                    {loading2 ? 'Generating...' : 'Generate from AI'}
                   </button>
                 </div>
                 <Box
                   sx={{ border: 1, borderColor: 'grey.300', borderRadius: 1 }}
                 >
                   <TextEditor
-                    value={form.watch(`workExperience.${index}.description`)}
-                    {...form.register(`workExperience.${index}.description`)}
+                    value={
+                      form.watch(`workExperience.${index}.description`) || ''
+                    }
                     onChange={(value) =>
                       form.setValue(
                         `workExperience.${index}.description`,
@@ -135,6 +186,8 @@ export function WorkExperienceStep({ form }: { form: any }) {
           append({
             jobTitle: '',
             company: '',
+            city: '',
+            country: '',
             startDate: '',
             endDate: '',
             description: '',
