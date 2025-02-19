@@ -1,37 +1,56 @@
-import React from 'react';
-import Editor from '@monaco-editor/react';
+import React, { useMemo } from 'react';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+import '../CSS/react-quill-custom-css.css';
 
 interface TextEditorProps {
   value: string;
-  onChange: (value: string | undefined) => void;
-  language?: string;
-  height?: string | number;
+  onChange: (value: string) => void;
+  placeholder?: string;
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({
   value,
   onChange,
-  language = 'plaintext',
-  height = '300px',
+  placeholder,
 }) => {
+  const modules = useMemo(
+    () => ({
+      toolbar: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link'],
+        ['clean'],
+      ],
+    }),
+    []
+  );
+
+  const formats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'list',
+    'bullet',
+    'link',
+  ];
+
   return (
-    <Editor
-      height={height}
-      defaultLanguage={language}
+    <ReactQuill
+      theme="snow"
       value={value}
       onChange={onChange}
-      theme="vs-light"
-      options={{
-        minimap: { enabled: false },
-        fontSize: 14,
-        wordWrap: 'on',
-        lineNumbers: 'on',
-        folding: true,
-        lineHeight: 21,
-        automaticLayout: true,
-      }}
+      modules={modules}
+      formats={formats}
+      placeholder={placeholder}
+      className="bg-white"
     />
   );
 };
 
 export default TextEditor;
+
+export { TextEditor };
