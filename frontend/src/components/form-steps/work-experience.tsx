@@ -48,12 +48,7 @@ export function WorkExperienceStep({
       setLoading2(true);
       const result = await AIchatSession2.sendMessage(prompt);
       const response = await result.response.text();
-      const text = response
-        .split('.')
-        .map((sentence) => sentence.trim())
-        .filter((sentence) => sentence)
-        .join('\n');
-
+      const text = response.replace(/\s*\*\s*/g, '\n');
       form.setValue(`workExperience.${index}.description`, text);
     } catch (error) {
       console.error('Error generating description:', error);
