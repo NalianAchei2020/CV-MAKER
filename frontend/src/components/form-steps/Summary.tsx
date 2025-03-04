@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Radio,
 } from '@mui/material';
-import { AIchatSession } from '@/service/generateTextFromAI';
+import { AIchatSession } from '@/services/generateTextFromAI';
 
 const SummaryStep = ({ form, formData }: { form: any; formData: any }) => {
   const [summaryOptions, setSummaryOptions] = useState<{

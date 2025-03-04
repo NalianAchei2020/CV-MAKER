@@ -1,46 +1,34 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import config from './config.js';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import authRoutes from './routes/authRoutes.js';
+import connectDB from './database/database.js';
+import userRoutes from './routes/userRoutes.js';
+import templateRoutes from './routes/templateRoutes.js';
+import coverLetterRoutes from './routes/coverLetterRoutes.js';
+import cvRoutes from './routes/cvRoutes.js';
 
 const app = express();
-// body parser middleware
+
+// Middleware
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// cookies middleware
-app.use(cookieParser(config.JWT_SECRET));
+// Database
+connectDB();
 
-//cors
-app.use(
-  cors({
-    origin: '',
-    methods: ['POST', 'GET', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  })
+// Routes
+app.use('/auth', authRoutes);
+app.use('/api', userRoutes);
+app.use('/api', coverLetterRoutes);
+app.use('/api/templates', templateRoutes);
+app.use('/api/cvs', cvRoutes);
+
+app.get('/', (req, res) => res.send('Welcome to CV Maker'));
+
+const PORT = process.env.PORT || 20015;
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
 );
-
-// Preflight requests
-app.options('*', (req, res) => {
-  res.header(
-    'Access-Control-Allow-Origin',
-    'https://codegisoft-acadamy.onrender.com'
-  );
-  res.header(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
-  );
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.status(204).send();
-});
-
-app.get('/', (req, res) => {
-  res.send('Welcome to CV maker');
-});
-
-app.listen(config.PORT, () => {
-  console.log('Application is running on http://localhost:20015');
-});

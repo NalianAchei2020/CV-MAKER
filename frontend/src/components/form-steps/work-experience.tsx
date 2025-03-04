@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TextEditor from './textEditor';
 
 import { Loader2 } from 'lucide-react';
-import { AIchatSession2 } from '@/service/AIexperienceDesAPI';
+import { AIchatSession2 } from '@/services/AIexperienceDesAPI';
 
 interface WorkExperienceStepProps {
   form: any;

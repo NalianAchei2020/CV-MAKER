@@ -1,6 +1,4 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Paper,
@@ -14,17 +12,17 @@ import {
   useMediaQuery,
   MobileStepper,
 } from '@mui/material';
-import { PersonalInfoStep } from '@/components/form-steps/personal-info';
+import { PersonalInfoStep } from './form-steps/personal-info';
 import SummaryStep from './form-steps/Summary';
-import { WorkExperienceStep } from '@/components/form-steps/work-experience';
-import { EducationStep } from '@/components/form-steps/education';
-import { SkillsStep } from '@/components/form-steps/skills';
-import { ProjectsStep } from '@/components/form-steps/projects';
-import { LanguagesStep } from '@/components/form-steps/languages';
+import { WorkExperienceStep } from './form-steps/work-experience';
+import { EducationStep } from './form-steps/education';
+import { SkillsStep } from './form-steps/skills';
+import { ProjectsStep } from './form-steps/projects';
+import { LanguagesStep } from './form-steps/languages';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import SaveIcon from '@mui/icons-material/Save';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { Eye } from 'lucide-react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 export interface ResumeFormValues {
   personalInfo: {
@@ -33,6 +31,7 @@ export interface ResumeFormValues {
     phone: string;
     address: string;
     profilePicture: string;
+    linkedin_profile: string;
   };
   job_title: string;
   summary: string;
@@ -70,11 +69,6 @@ export interface ResumeFormValues {
   }>;
 }
 
-const STORAGE_KEYS = {
-  FORM_DATA: 'resumeFormData',
-  ACTIVE_STEP: 'resumeActiveStep',
-} as const;
-
 const defaultValues: ResumeFormValues = {
   personalInfo: {
     fullName: '',
@@ -82,6 +76,7 @@ const defaultValues: ResumeFormValues = {
     phone: '',
     address: '',
     profilePicture: '',
+    linkedin_profile: '',
   },
   job_title: '',
   summary: '',
@@ -102,31 +97,35 @@ const steps = [
   { label: 'Languages', component: LanguagesStep },
 ];
 
-export function ResumeForm() {
+interface ResumeFormProps {
+  selectedTemplate: string;
+  setFormData: (data: ResumeFormValues) => void;
+}
+
+export const ResumeForm: React.FC<ResumeFormProps> = ({
+  selectedTemplate,
+  setFormData,
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [savedFormData, setSavedFormData] = useLocalStorage<ResumeFormValues>(
-    STORAGE_KEYS.FORM_DATA,
+  const [formData, setLocalFormData] = useLocalStorage(
+    'resumeFormData',
     defaultValues
   );
-
-  const [activeStep, setActiveStep] = useLocalStorage(
-    STORAGE_KEYS.ACTIVE_STEP,
-    0
-  );
+  const [activeStep, setActiveStep] = useLocalStorage('resumeActiveStep', 0);
 
   const form = useForm<ResumeFormValues>({
-    defaultValues: savedFormData,
+    defaultValues: formData,
   });
 
-  // Update localStorage when form changes
-  useEffect(() => {
+  // Update localStorage whenever form data changes
+  React.useEffect(() => {
     const subscription = form.watch((value) => {
-      setSavedFormData(value as ResumeFormValues);
+      setLocalFormData(value as ResumeFormValues);
     });
     return () => subscription.unsubscribe();
-  }, [form.watch, setSavedFormData]);
+  }, [form.watch, setLocalFormData]);
 
   const CurrentStepComponent = steps[activeStep].component;
 
@@ -138,9 +137,10 @@ export function ResumeForm() {
     setActiveStep(Math.max(0, activeStep - 1));
   };
 
-  const onSubmit = (data: ResumeFormValues) => {
-    console.log(data);
-    setSavedFormData(data);
+  const handlePreview = () => {
+    const updatedData = form.getValues();
+    console.log('Previewing with data:', updatedData);
+    setFormData(updatedData); // ✅ Update `Home.tsx`
   };
 
   return (
@@ -155,55 +155,15 @@ export function ResumeForm() {
         Create Your Resume
       </Typography>
 
-      {isMobile ? (
-        <Box sx={{ maxWidth: '100%', flexGrow: 1 }}>
-          <MobileStepper
-            variant="text"
-            steps={steps.length}
-            position="static"
-            activeStep={activeStep}
-            sx={{
-              backgroundColor: 'transparent',
-              mb: 3,
-              '.MuiMobileStepper-dot': {
-                width: 8,
-                height: 8,
-              },
-              '.MuiMobileStepper-dotActive': {
-                backgroundColor: theme.palette.primary.main,
-              },
-            }}
-            nextButton={
-              <Typography variant="body2" color="primary">
-                {steps[activeStep]?.label}
-              </Typography>
-            }
-            backButton={
-              <Typography variant="body2" color="text.secondary">
-                Step {activeStep + 1}/{steps.length}
-              </Typography>
-            }
-          />
-        </Box>
-      ) : (
-        <Stepper
-          activeStep={activeStep}
-          sx={{
-            py: 4,
-            '& .MuiStepLabel-label': {
-              typography: 'body2',
-            },
-          }}
-        >
-          {steps.map((step) => (
-            <Step key={step.label}>
-              <StepLabel>{step.label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      )}
+      <Stepper activeStep={activeStep} sx={{ py: 4 }}>
+        {steps.map((step) => (
+          <Step key={step.label}>
+            <StepLabel>{step.label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form>
         <Box sx={{ mt: 4, mb: 4 }}>
           <CurrentStepComponent form={form} formData={form.getValues()} />
         </Box>
@@ -214,7 +174,6 @@ export function ResumeForm() {
             justifyContent: 'space-between',
             pt: 2,
             gap: 2,
-            flexDirection: 'row',
           }}
         >
           <Button
@@ -228,12 +187,12 @@ export function ResumeForm() {
 
           {activeStep === steps.length - 1 ? (
             <Button
-              type="submit"
               variant="contained"
               color="primary"
-              startIcon={<SaveIcon />}
+              startIcon={<Eye className="w-4 h-4" />}
+              onClick={handlePreview}
             >
-              Save Resume
+              Preview Resume
             </Button>
           ) : (
             <Button
@@ -248,4 +207,4 @@ export function ResumeForm() {
       </form>
     </Paper>
   );
-}
+};

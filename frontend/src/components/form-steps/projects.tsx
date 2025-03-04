@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AIchatSession3 } from '@/service/AIProjectDesAPI';
+import { AIchatSession3 } from '@/services/AIProjectDesAPI';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
