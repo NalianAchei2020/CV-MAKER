@@ -5,6 +5,7 @@ import Header from '@/components/header/header';
 import Footer from '@/components/footer/footer';
 import ToTop from '@/components/toTop';
 import ReduxProvider from '@/redux/ReduxProvider'; // ✅ Wrap Redux in a separate client component
+import { ThemeProvider } from '@/components/theme-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,12 +31,14 @@ export default function Layout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          {' '}
-          {/* ✅ Use a separate Client Component for Redux */}
-          <Header />
-          {children}
-          <ToTop />
-          <Footer />
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            {' '}
+            {/* ✅ Use a separate Client Component for Redux */}
+            <Header />
+            {children}
+            <ToTop />
+            <Footer />
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>
